@@ -31,6 +31,8 @@ export default function SneakerSpaGamePage() {
   // Game Engine Internal Refs
   const isPointerDown = useRef(false);
   const pointerPos = useRef({ x: 0, y: 0 });
+  const currentToolRef = useRef<ToolType>('brush');
+  const isCompletedRef = useRef(false);
   const stainsRef = useRef<StainPoint[]>([]);
   const totalStainsRef = useRef(26);
   const midsoleOxidationRef = useRef(100); // 100% yellow -> 0% white
@@ -56,6 +58,7 @@ export default function SneakerSpaGamePage() {
     totalStainsRef.current = list.length;
     midsoleOxidationRef.current = 100;
     nanoSprayRef.current = 0;
+    isCompletedRef.current = false;
     setProgress(0);
     setIsCompleted(false);
     setShowModal(false);
@@ -66,6 +69,7 @@ export default function SneakerSpaGamePage() {
   // Update speech when switching tools
   const handleToolChange = (tool: ToolType) => {
     setCurrentTool(tool);
+    currentToolRef.current = tool;
     if (tool === 'brush') {
       setMascotSpeech('แปรงขนม้าพร้อมแล้ว! คลิกลากถูบริเวณคราบโคลนบนตัวรองเท้าให้ฟองฟู่ออกมาเลย!');
     } else if (tool === 'uv') {
@@ -84,6 +88,8 @@ export default function SneakerSpaGamePage() {
 
   // Victory celebration trigger
   const triggerVictory = useCallback(() => {
+    isCompletedRef.current = true;
+    setIsCompleted(true);
     soundManager.playVictory();
     confetti({
       particleCount: 100,
@@ -98,9 +104,10 @@ export default function SneakerSpaGamePage() {
 
   // Tool logic application
   const applyToolAt = useCallback((x: number, y: number, width: number, height: number) => {
-    if (isCompleted) return;
+    if (isCompletedRef.current) return;
+    const tool = currentToolRef.current;
 
-    if (currentTool === 'brush') {
+    if (tool === 'brush') {
       soundManager.playScrub();
       for (let p = 0; p < 3; p++) {
         particlesRef.current.push({
@@ -125,7 +132,7 @@ export default function SneakerSpaGamePage() {
           if (stain.opacity < 0.05) stain.opacity = 0;
         }
       });
-    } else if (currentTool === 'uv') {
+    } else if (tool === 'uv') {
       soundManager.playUV();
       const normY = y / height;
       const normX = x / width;
@@ -145,7 +152,7 @@ export default function SneakerSpaGamePage() {
         }
         midsoleOxidationRef.current = Math.max(0, midsoleOxidationRef.current - 2.8);
       }
-    } else if (currentTool === 'spray') {
+    } else if (tool === 'spray') {
       soundManager.playSpray();
       const normY = y / height;
       const normX = x / width;
@@ -176,11 +183,28 @@ export default function SneakerSpaGamePage() {
 
     setProgress(totalPct);
 
-    if (totalPct >= 100 && !isCompleted) {
-      setIsCompleted(true);
+    if (totalPct >= 100 && !isCompletedRef.current) {
       triggerVictory();
     }
-  }, [currentTool, isCompleted, triggerVictory]);
+  }, [triggerVictory]);
+
+  // Initial stain generation on component mount
+  useEffect(() => {
+    initStains();
+  }, [initStains]);
+
+  // Global window pointer up listener so dragging off-canvas releases cleanly
+  useEffect(() => {
+    const handleGlobalUp = () => {
+      isPointerDown.current = false;
+    };
+    window.addEventListener('mouseup', handleGlobalUp);
+    window.addEventListener('touchend', handleGlobalUp);
+    return () => {
+      window.removeEventListener('mouseup', handleGlobalUp);
+      window.removeEventListener('touchend', handleGlobalUp);
+    };
+  }, []);
 
   // Main Canvas Render & Animation Loop
   useEffect(() => {
@@ -196,8 +220,6 @@ export default function SneakerSpaGamePage() {
       sneakerImgRef.current = img;
       sneakerImgLoadedRef.current = true;
     };
-
-    initStains();
 
     let animationFrameId: number;
 
@@ -285,13 +307,14 @@ export default function SneakerSpaGamePage() {
         ctx.save();
         const px = pointerPos.current.x;
         const py = pointerPos.current.y;
-        if (currentTool === 'brush') {
+        const activeTool = currentToolRef.current;
+        if (activeTool === 'brush') {
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.arc(px, py, 28, 0, Math.PI * 2);
           ctx.stroke();
-        } else if (currentTool === 'uv') {
+        } else if (activeTool === 'uv') {
           const grad = ctx.createRadialGradient(px, py, 5, px, py, 45);
           grad.addColorStop(0, 'rgba(192, 132, 252, 0.7)');
           grad.addColorStop(1, 'rgba(192, 132, 252, 0)');
@@ -299,7 +322,7 @@ export default function SneakerSpaGamePage() {
           ctx.beginPath();
           ctx.arc(px, py, 45, 0, Math.PI * 2);
           ctx.fill();
-        } else if (currentTool === 'spray') {
+        } else if (activeTool === 'spray') {
           const grad = ctx.createRadialGradient(px, py, 10, px, py, 55);
           grad.addColorStop(0, 'rgba(103, 232, 249, 0.6)');
           grad.addColorStop(1, 'rgba(103, 232, 249, 0)');
@@ -319,7 +342,7 @@ export default function SneakerSpaGamePage() {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [initStains, currentTool]);
+  }, []);
 
   // Pointer event handlers
   const handlePointerDown = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
@@ -348,15 +371,17 @@ export default function SneakerSpaGamePage() {
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     } else if ('clientX' in e) {
-      clientX = e.clientX;
-      clientY = e.clientY;
+      clientX = (e as React.MouseEvent<HTMLCanvasElement>).clientX;
+      clientY = (e as React.MouseEvent<HTMLCanvasElement>).clientY;
     }
 
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
 
     pointerPos.current = { x, y };
-    applyToolAt(x, y, rect.width, rect.height);
+    applyToolAt(x, y, canvas.width, canvas.height);
   };
 
   // Submit Zero-Party Data & Claim Voucher
