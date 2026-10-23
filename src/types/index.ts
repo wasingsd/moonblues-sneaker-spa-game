@@ -26,7 +26,7 @@ export interface ParticleItem {
 
 export interface ZeroPartyProfile {
   name: string;
-  phoneOrLine: string;
+  phoneNumber: string; // strictly 10-digit Thai phone number
   shoeSize: string;
   favoriteBrand: string;
   wearFrequency: string;
