@@ -1,5 +1,7 @@
 export type ToolType = 'brush' | 'uv' | 'spray';
 
+export type GameStep = 1 | 2 | 3 | 4;
+
 export interface StainPoint {
   id: number;
   normX: number; // relative to sneaker bounding box (0..1)
@@ -23,6 +25,8 @@ export interface ParticleItem {
 }
 
 export interface ZeroPartyProfile {
+  name: string;
+  phoneOrLine: string;
   shoeSize: string;
   favoriteBrand: string;
   wearFrequency: string;
