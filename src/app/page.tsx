@@ -99,27 +99,27 @@ export default function SneakerSpaGamePage() {
 
     // 15 realistic, crisp dirt splatter locations matching actual wear patterns
     const zones = [
-      // Mudguard & Toe Cap
-      { minX: 0.65, maxX: 0.85, minY: 0.52, maxY: 0.64, minS: 0.055, maxS: 0.085 },
-      { minX: 0.72, maxX: 0.89, minY: 0.55, maxY: 0.66, minS: 0.050, maxS: 0.075 },
-      { minX: 0.78, maxX: 0.90, minY: 0.58, maxY: 0.68, minS: 0.055, maxS: 0.080 },
+      // Mudguard & Toe Cap (front rounded leather)
+      { minX: 0.68, maxX: 0.88, minY: 0.58, maxY: 0.74, minS: 0.055, maxS: 0.085 },
+      { minX: 0.75, maxX: 0.92, minY: 0.62, maxY: 0.76, minS: 0.050, maxS: 0.075 },
+      { minX: 0.80, maxX: 0.94, minY: 0.66, maxY: 0.78, minS: 0.055, maxS: 0.080 },
       // Quarter Panel & Swoosh
-      { minX: 0.38, maxX: 0.55, minY: 0.44, maxY: 0.56, minS: 0.055, maxS: 0.085 },
-      { minX: 0.45, maxX: 0.62, minY: 0.48, maxY: 0.58, minS: 0.050, maxS: 0.080 },
-      { minX: 0.32, maxX: 0.48, minY: 0.50, maxY: 0.62, minS: 0.055, maxS: 0.080 },
+      { minX: 0.38, maxX: 0.58, minY: 0.50, maxY: 0.68, minS: 0.055, maxS: 0.085 },
+      { minX: 0.46, maxX: 0.65, minY: 0.54, maxY: 0.70, minS: 0.050, maxS: 0.080 },
+      { minX: 0.32, maxX: 0.48, minY: 0.56, maxY: 0.72, minS: 0.055, maxS: 0.080 },
       // Heel Counter & Collar
-      { minX: 0.16, maxX: 0.28, minY: 0.44, maxY: 0.58, minS: 0.055, maxS: 0.085 },
-      { minX: 0.22, maxX: 0.34, minY: 0.48, maxY: 0.62, minS: 0.050, maxS: 0.075 },
+      { minX: 0.12, maxX: 0.28, minY: 0.48, maxY: 0.68, minS: 0.055, maxS: 0.085 },
+      { minX: 0.20, maxX: 0.34, minY: 0.52, maxY: 0.72, minS: 0.050, maxS: 0.075 },
       // Upper Sole Seam
-      { minX: 0.25, maxX: 0.45, minY: 0.58, maxY: 0.66, minS: 0.055, maxS: 0.080 },
-      { minX: 0.52, maxX: 0.72, minY: 0.59, maxY: 0.67, minS: 0.050, maxS: 0.075 },
+      { minX: 0.22, maxX: 0.46, minY: 0.68, maxY: 0.78, minS: 0.055, maxS: 0.080 },
+      { minX: 0.50, maxX: 0.74, minY: 0.70, maxY: 0.79, minS: 0.050, maxS: 0.075 },
       // Eyestay & Laces
-      { minX: 0.48, maxX: 0.68, minY: 0.36, maxY: 0.48, minS: 0.045, maxS: 0.070 },
-      { minX: 0.55, maxX: 0.75, minY: 0.38, maxY: 0.50, minS: 0.045, maxS: 0.070 },
+      { minX: 0.48, maxX: 0.68, minY: 0.32, maxY: 0.50, minS: 0.045, maxS: 0.070 },
+      { minX: 0.55, maxX: 0.72, minY: 0.36, maxY: 0.52, minS: 0.045, maxS: 0.070 },
       // Subtle edge splatters
-      { minX: 0.68, maxX: 0.84, minY: 0.46, maxY: 0.58, minS: 0.050, maxS: 0.075 },
-      { minX: 0.28, maxX: 0.42, minY: 0.40, maxY: 0.52, minS: 0.045, maxS: 0.070 },
-      { minX: 0.82, maxX: 0.91, minY: 0.62, maxY: 0.70, minS: 0.050, maxS: 0.075 },
+      { minX: 0.66, maxX: 0.85, minY: 0.50, maxY: 0.66, minS: 0.050, maxS: 0.075 },
+      { minX: 0.26, maxX: 0.40, minY: 0.44, maxY: 0.60, minS: 0.045, maxS: 0.070 },
+      { minX: 0.82, maxX: 0.95, minY: 0.68, maxY: 0.80, minS: 0.050, maxS: 0.075 },
     ];
 
     let idCounter = 0;
@@ -215,8 +215,8 @@ export default function SneakerSpaGamePage() {
     // Tool 2: UV bleaches aged yellow midsole
     else if (tool === 'uv') {
       soundManager.playUV();
-      // Midsole is located at relY 0.58 .. 0.78 across relX 0.08 .. 0.94
-      if (relX >= 0.08 && relX <= 0.94 && relY >= 0.58 && relY <= 0.80) {
+      // Midsole is located at relY 0.70 .. 0.98 across relX 0.04 .. 0.96
+      if (relX >= 0.04 && relX <= 0.96 && relY >= 0.70 && relY <= 0.98) {
         for (let p = 0; p < 2; p++) {
           particlesRef.current.push({
             x: canvasX + (Math.random() - 0.5) * 18,
@@ -236,7 +236,7 @@ export default function SneakerSpaGamePage() {
     // Tool 3: Nano Spray applies protective water-repellent layer
     else if (tool === 'spray') {
       soundManager.playSpray();
-      if (relX >= 0.08 && relX <= 0.94 && relY >= 0.18 && relY <= 0.82) {
+      if (relX >= 0.04 && relX <= 0.96 && relY >= 0.12 && relY <= 0.98) {
         for (let p = 0; p < 4; p++) {
           particlesRef.current.push({
             x: canvasX + (Math.random() - 0.5) * 32,
@@ -350,9 +350,9 @@ export default function SneakerSpaGamePage() {
 
       ctx.clearRect(0, 0, w, h);
 
-      // The sneaker natural aspect ratio: 1200 / 896 ≈ 1.339
-      const naturalW = 1200;
-      const naturalH = 896;
+      // The sneaker natural aspect ratio: 984 / 524 ≈ 1.878 (100% full profile, unclipped toe & heel)
+      const naturalW = 984;
+      const naturalH = 524;
       const imgRatio = naturalW / naturalH;
 
       let drawW = w * 0.92;
@@ -364,7 +364,7 @@ export default function SneakerSpaGamePage() {
       }
 
       const drawX = (w - drawW) / 2;
-      const drawY = (h - drawH) / 2 + 4;
+      const drawY = (h - drawH) / 2;
 
       sneakerBoxRef.current = { x: drawX, y: drawY, width: drawW, height: drawH };
 
@@ -372,7 +372,7 @@ export default function SneakerSpaGamePage() {
       ctx.save();
       ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
       ctx.beginPath();
-      ctx.ellipse(drawX + drawW * 0.51, drawY + drawH * 0.80, drawW * 0.44, drawH * 0.065, -0.015, 0, Math.PI * 2);
+      ctx.ellipse(drawX + drawW * 0.50, drawY + drawH * 0.95, drawW * 0.46, drawH * 0.065, -0.012, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
