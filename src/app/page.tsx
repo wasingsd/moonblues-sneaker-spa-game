@@ -21,6 +21,12 @@ import {
   Gamepad2,
   FileEdit,
   Ticket,
+  Flame,
+  Zap,
+  Award,
+  Lock,
+  User,
+  Phone,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundManager } from '@/lib/audio';
@@ -54,9 +60,10 @@ export default function SneakerSpaGamePage() {
   const [memberName, setMemberName] = useState('');
   const [memberPhone, setMemberPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
+  const [selectedPersona, setSelectedPersona] = useState('Hype Collector');
   const [selectedSize, setSelectedSize] = useState('US 8.5-9.5 (EU 42-43)');
   const [selectedBrand, setSelectedBrand] = useState('Nike & Air Jordan');
-  const [selectedFreq, setSelectedFreq] = useState('สลับใส่ 3-5 คู่');
+  const [selectedFreq, setSelectedFreq] = useState('สลับใส่ 4-9 คู่');
   const [pdpaConsent, setPdpaConsent] = useState(true);
   const [profileResult, setProfileResult] = useState<ZeroPartyProfile | null>(null);
 
@@ -570,8 +577,10 @@ export default function SneakerSpaGamePage() {
     }
     setPhoneError('');
 
-    let persona = 'THE HYPEBEAST MASTER';
-    if (selectedBrand.includes('New Balance')) persona = 'THE TIMELESS ARCHIVIST';
+    let persona = 'THE HYPE COLLECTOR';
+    if (selectedPersona === 'Daily Beater') persona = 'THE DAILY BEATER';
+    else if (selectedPersona === 'Pristine Purist') persona = 'THE PRISTINE PURIST';
+    else if (selectedBrand.includes('New Balance')) persona = 'THE TIMELESS ARCHIVIST';
     else if (selectedBrand.includes('Salomon') || selectedBrand.includes('Asics')) persona = 'THE GORPCORE EXPLORER';
     else if (selectedBrand.includes('Adidas')) persona = 'THE TERRACE RETRO ICON';
 
@@ -1038,171 +1047,287 @@ export default function SneakerSpaGamePage() {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 3: ZERO-PARTY DATA INTAKE FORM                       */}
+        {/* STEP 3: SNEAKERHEAD DNA QUIZ & VIP CARD CUSTOMIZER        */}
         {/* ========================================================= */}
         {currentStep === 3 && (
           <section className="w-full max-w-xl flex flex-col gap-3.5 animate-fadeIn">
-            {/* Mascot Greeting */}
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-blue-950/70 to-slate-900 border border-blue-500/30 shadow-lg">
+            {/* Mascot Greeting & Motivation */}
+            <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-blue-950/80 via-slate-900 to-indigo-950/80 border border-blue-500/40 shadow-xl">
               <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden border-2 border-cyan-400 flex-shrink-0 animate-mascot-bob bg-gradient-to-b from-blue-900/60 to-slate-900 shadow-md">
                 <Image src="/assets/mascot/nong_blue_avatar.png" alt="Nong Blue" fill className="object-contain p-1" priority />
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] sm:text-[11px] font-bold text-cyan-400 uppercase tracking-wider whitespace-nowrap">
-                  ขั้นตอนที่ 3: ลงทะเบียน SNEAKERHEAD PROFILE
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] sm:text-[11px] font-extrabold text-cyan-400 uppercase tracking-wider whitespace-nowrap">
+                    STEP 3: SNEAKERHEAD DNA DIAGNOSTIC
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-cyan-400/10 border border-cyan-400/30 text-[9px] font-bold text-cyan-300">
+                    5 คำถาม • 30 วินาที
+                  </span>
                 </div>
                 <p className="text-xs text-gray-200 mt-0.5 leading-snug">
-                  ระบุไซส์และแบรนด์โปรดของคุณ เพื่อออกบัตร VIP และรับโค้ด Voucher 100.- ทันที!
+                  ตอบสเปกรองเท้าคู่โปรด ให้หมอน้องบลูปรุงสูตรสปาเฉพาะตัว พร้อมสลักชื่อลงบัตร Titanium VIP รับส่วนลด 100.- ทันที!
                 </p>
               </div>
             </div>
 
-            {/* Form Card */}
-            <form onSubmit={handleSubmitForm} className="p-4 sm:p-6 rounded-3xl bg-slate-900 border border-white/10 shadow-2xl flex flex-col gap-3.5 sm:gap-4">
-              {/* Field 1: Name */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-bold text-blue-300 whitespace-nowrap">
-                  1. ชื่อของคุณ หรือชื่อเล่น (สลักลงบนบัตร VIP)
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="เช่น คุณธนกร, น้องนนท์ สตรีทแวร์"
-                  value={memberName}
-                  onChange={(e) => setMemberName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-white/10 text-white placeholder-gray-500 text-xs sm:text-sm focus:outline-none focus:border-cyan-400 transition"
-                />
-              </div>
-
-              {/* Field 2: Mobile Phone (Strict 10 Digits Only, No LINE ID) */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-blue-300 whitespace-nowrap">
-                    2. เบอร์โทรศัพท์มือถือของคุณ (เฉพาะตัวเลข 10 หลัก)
-                  </label>
-                  <span className="text-[10px] font-mono text-cyan-400 font-bold">
-                    {memberPhone.length}/10
-                  </span>
+            {/* Live Holographic VIP Card Preview (Real-Time Psychological Gratification) */}
+            <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-slate-900 via-blue-950/40 to-black border border-cyan-400/40 shadow-[0_0_20px_rgba(6,182,212,0.15)] flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[10px] font-extrabold text-cyan-400 uppercase tracking-widest">
+                  <Sparkles size={12} className="animate-spin text-cyan-300" />
+                  <span>LIVE VIP CARD PREVIEW (สลักข้อมูลเรียลไทม์)</span>
                 </div>
-                <input
-                  type="tel"
-                  inputMode="numeric"
-                  pattern="[0-9]{10}"
-                  maxLength={10}
-                  required
-                  placeholder="เช่น 0812345678 (กรอกได้เฉพาะตัวเลข 10 หลัก)"
-                  value={memberPhone}
-                  onChange={(e) => {
-                    const onlyNums = e.target.value.replace(/\D/g, '').slice(0, 10);
-                    setMemberPhone(onlyNums);
-                    if (phoneError) setPhoneError('');
-                  }}
-                  className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border text-white placeholder-gray-500 text-xs sm:text-sm font-mono tracking-wider focus:outline-none transition ${
-                    phoneError ? 'border-red-500' : 'border-white/10 focus:border-cyan-400'
-                  }`}
-                />
-                {phoneError && (
-                  <p className="text-[11px] text-red-400 font-semibold">{phoneError}</p>
-                )}
+                <span className="text-[9px] font-mono font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+                  VOUCHER 100.- OFF
+                </span>
               </div>
 
-              {/* Field 3: Shoe Size - Compact Non-Wrapping Grid */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-bold text-blue-300 whitespace-nowrap">
-                  3. คุณใส่รองเท้าไซส์มาตรฐานเท่าไหร่? (Shoe Size)
-                </label>
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-black/60 border border-white/10 gap-2">
+                <div className="min-w-0">
+                  <div className="text-[10px] text-gray-400">CARDHOLDER NAME:</div>
+                  <div className="text-xs sm:text-sm font-black text-white truncate">
+                    {memberName.trim() || 'SNEAKERHEAD VIP'}
+                  </div>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <div className="text-[10px] text-gray-400">YOUR DNA:</div>
+                  <div className="text-xs font-black text-cyan-400 whitespace-nowrap">
+                    {selectedPersona === 'Hype Collector' && '🔥 HYPE COLLECTOR'}
+                    {selectedPersona === 'Daily Beater' && '👟 DAILY BEATER'}
+                    {selectedPersona === 'Pristine Purist' && '💎 PRISTINE PURIST'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-[10px] text-gray-400 px-1">
+                <span>SIZE: <strong className="text-gray-200">{selectedSize.split(' ')[0]}</strong></span>
+                <span>BRAND: <strong className="text-gray-200">{selectedBrand.split('&')[0]}</strong></span>
+                <span>STATUS: <strong className="text-emerald-400">READY TO MINT</strong></span>
+              </div>
+            </div>
+
+            {/* Quiz Form Card */}
+            <form onSubmit={handleSubmitForm} className="p-4 sm:p-6 rounded-3xl bg-slate-900 border border-white/10 shadow-2xl flex flex-col gap-4">
+              
+              {/* Question 1: Sneakerhead Persona */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 whitespace-nowrap">
+                  <Flame size={14} className="text-amber-400 flex-shrink-0" />
+                  <span>1. สไตล์การใส่สนีกเกอร์ประจำตัวคุณคือสายไหน?</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {[
+                    { id: 'Hype Collector', icon: '🔥', title: 'The Hype Collector', desc: 'ล่ารุ่นดรอปแรร์ กล่องต้องครบ สภาพกริบ 10/10' },
+                    { id: 'Daily Beater', icon: '👟', title: 'The Daily Beater', desc: 'ลุยทุกที่ ฝนตก แดดออก รองเท้าคู่โปรดคือชีวิต' },
+                    { id: 'Pristine Purist', icon: '💎', title: 'The Pristine Purist', desc: 'ถนอมดั่งลูก เช็ดทำความสะอาดทุกวัน ไร้รอยย่น' },
+                  ].map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setSelectedPersona(p.id)}
+                      className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between gap-1 ${
+                        selectedPersona === p.id
+                          ? 'bg-blue-600/30 border-cyan-400 text-white shadow-[0_0_12px_rgba(6,182,212,0.3)] -translate-y-0.5'
+                          : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-base">{p.icon}</span>
+                        {selectedPersona === p.id && <CheckCircle2 size={13} className="text-cyan-400" />}
+                      </div>
+                      <div className="text-[11px] font-bold text-white whitespace-nowrap">{p.title}</div>
+                      <div className="text-[9.5px] text-gray-400 leading-tight">{p.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Question 2: Favorite Brand */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 whitespace-nowrap">
+                  <Zap size={14} className="text-amber-400 flex-shrink-0" />
+                  <span>2. แบรนด์ลูกรักในดวงใจที่คุณยอมเปย์ไม่อั้น?</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { name: 'Nike & Air Jordan', desc: 'ตำนาน Dunk, AF1, Retro High' },
+                    { name: 'New Balance', desc: 'นุ่มระดับพรีเมียม 990, 1906, 2002R' },
+                    { name: 'Asics & Salomon', desc: 'สาย Gorpcore & Techwear ตัวท็อป' },
+                    { name: 'Adidas & Yeezy', desc: 'สามแถบคลาสสิก Samba, Campus' },
+                  ].map((brand) => (
+                    <button
+                      key={brand.name}
+                      type="button"
+                      onClick={() => setSelectedBrand(brand.name)}
+                      className={`p-2.5 rounded-xl border text-left transition ${
+                        selectedBrand === brand.name
+                          ? 'bg-blue-600/30 border-cyan-400 text-white shadow-md'
+                          : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-white whitespace-nowrap">{brand.name}</span>
+                        {selectedBrand === brand.name && <CheckCircle2 size={12} className="text-cyan-400" />}
+                      </div>
+                      <div className="text-[9.5px] text-gray-400 mt-0.5 truncate">{brand.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Question 3: Shoe Size */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 whitespace-nowrap">
+                    <Award size={14} className="text-amber-400 flex-shrink-0" />
+                    <span>3. ไซส์รองเท้าประจำตัวของคุณ?</span>
+                  </div>
+                  <span className="text-[10px] text-gray-400 hidden sm:inline">เพื่อคัดของแรร์ตรงไซส์ให้คุณก่อนใคร</span>
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     'US 7-8 (EU 40-41)',
                     'US 8.5-9.5 (EU 42-43)',
                     'US 10-11 (EU 44-45)',
-                    'ไซส์พิเศษอื่นๆ',
+                    'ไซส์พิเศษอื่นๆ (40- / 46+)',
                   ].map((size) => (
                     <button
                       key={size}
                       type="button"
                       onClick={() => setSelectedSize(size)}
-                      className={`py-2 px-1.5 sm:px-2 rounded-xl text-[11px] sm:text-xs font-medium border text-center transition whitespace-nowrap overflow-hidden text-ellipsis ${
+                      className={`py-2 px-2.5 rounded-xl text-[11px] font-semibold border text-center transition flex items-center justify-center gap-1.5 ${
                         selectedSize === size
                           ? 'bg-blue-600 border-cyan-400 text-white shadow-md'
                           : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
                       }`}
                     >
-                      {size}
+                      <span>{size}</span>
+                      {selectedSize === size && <CheckCircle2 size={12} className="text-cyan-300" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Field 4: Favorite Brand - Compact Non-Wrapping Grid */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-bold text-blue-300 whitespace-nowrap">
-                  4. แบรนด์สนีกเกอร์ลูกรักในดวงใจของคุณ?
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {['Nike & Air Jordan', 'New Balance', 'Asics & Salomon', 'Adidas & Yeezy'].map((brand) => (
-                    <button
-                      key={brand}
-                      type="button"
-                      onClick={() => setSelectedBrand(brand)}
-                      className={`py-2 px-1.5 sm:px-2 rounded-xl text-[11px] sm:text-xs font-medium border text-center transition whitespace-nowrap overflow-hidden text-ellipsis ${
-                        selectedBrand === brand
-                          ? 'bg-blue-600 border-cyan-400 text-white shadow-md'
-                          : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
-                      }`}
-                    >
-                      {brand}
-                    </button>
-                  ))}
+              {/* Question 4: Sneaker Rotation Count */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 whitespace-nowrap">
+                  <Sparkles size={14} className="text-amber-400 flex-shrink-0" />
+                  <span>4. รองเท้าคู่โปรดในกรุมีประมาณกี่คู่?</span>
                 </div>
-              </div>
-
-              {/* Field 5: Frequency - Compact 3 Columns */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-bold text-blue-300 whitespace-nowrap">
-                  5. ความถี่ในการสวมใส่สนีกเกอร์ของคุณ?
-                </label>
                 <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-                  {['ใส่ลุยทุกวัน', 'สลับใส่ 3-5 คู่', 'สะสม 10 คู่ขึ้น'].map((freq) => (
+                  {[
+                    { val: 'ใส่ลุย 1-3 คู่', badge: 'คู่เก่งลุยเดี่ยว' },
+                    { val: 'สลับใส่ 4-9 คู่', badge: 'หมุนเวียนตามชุด' },
+                    { val: 'สะสม 10 คู่ขึ้น', badge: 'สนีกเกอร์เฮดตัวจริง' },
+                  ].map((f) => (
                     <button
-                      key={freq}
+                      key={f.val}
                       type="button"
-                      onClick={() => setSelectedFreq(freq)}
-                      className={`py-2 px-1 rounded-xl text-[10px] sm:text-xs font-medium border text-center transition whitespace-nowrap overflow-hidden text-ellipsis ${
-                        selectedFreq === freq
-                          ? 'bg-blue-600 border-cyan-400 text-white shadow-md'
+                      onClick={() => setSelectedFreq(f.val)}
+                      className={`p-2 rounded-xl border text-center transition flex flex-col items-center justify-center ${
+                        selectedFreq === f.val
+                          ? 'bg-blue-600/30 border-cyan-400 text-white shadow-md'
                           : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
                       }`}
                     >
-                      {freq}
+                      <span className="text-[11px] font-bold text-white whitespace-nowrap">{f.val}</span>
+                      <span className="text-[9px] text-cyan-300/80 mt-0.5 whitespace-nowrap">{f.badge}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* PDPA Notice */}
-              <div className="p-2.5 sm:p-3 rounded-xl bg-slate-950 border border-emerald-500/40 text-[10px] sm:text-[11px] text-gray-300 leading-relaxed">
-                <span className="font-bold text-emerald-400 block mb-0.5 whitespace-nowrap">นโยบายความเป็นส่วนตัว (PDPA Notice)</span>
-                จัดเก็บข้อมูลไซส์และเบอร์โทรเพื่อวิเคราะห์สูตรสปาเฉพาะบุคคลและแจ้งเตือนพรีออเดอร์ตรงไซส์เท่านั้น ข้อมูลถูกจัดเก็บปลอดภัย และขอดูหรือขอลบได้ตลอดเวลาผ่าน LINE OA @moonbluesstore
-                <label className="flex items-center gap-2 mt-2 cursor-pointer font-semibold text-white">
+              {/* Question 5: Cardholder Name & Strict 10-Digit Phone */}
+              <div className="p-3 rounded-2xl bg-slate-950/90 border border-blue-500/30 flex flex-col gap-3">
+                <div className="text-[11px] font-bold text-cyan-400 uppercase tracking-wide flex items-center gap-1.5">
+                  <Lock size={13} className="text-cyan-400" />
+                  <span>5. สลักชื่อลงบัตร VIP & รับ SMS โค้ดลับส่วนลด 100.-</span>
+                </div>
+
+                {/* Name Field */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] text-gray-300 flex items-center gap-1">
+                    <User size={12} className="text-gray-400" />
+                    <span>ชื่อของคุณ หรือชื่อเล่นในวงการสนีกเกอร์:</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="เช่น คุณบอส สายดรอป, คุณนนท์ AF1"
+                    value={memberName}
+                    onChange={(e) => setMemberName(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white placeholder-gray-500 text-xs sm:text-sm focus:outline-none focus:border-cyan-400 transition"
+                  />
+                </div>
+
+                {/* Phone Field */}
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] text-gray-300 flex items-center gap-1">
+                      <Phone size={12} className="text-gray-400" />
+                      <span>เบอร์โทรศัพท์มือถือ (เฉพาะตัวเลข 10 หลัก สำหรับผูกคูปอง):</span>
+                    </label>
+                    <span className="text-[10px] font-mono text-cyan-400 font-bold">
+                      {memberPhone.length}/10
+                    </span>
+                  </div>
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
+                    maxLength={10}
+                    required
+                    placeholder="เช่น 0812345678 (กรอกได้เฉพาะตัวเลข 10 หลัก)"
+                    value={memberPhone}
+                    onChange={(e) => {
+                      const onlyNums = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      setMemberPhone(onlyNums);
+                      if (phoneError) setPhoneError('');
+                    }}
+                    className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border text-white placeholder-gray-500 text-xs sm:text-sm font-mono tracking-wider focus:outline-none transition ${
+                      phoneError ? 'border-red-500' : 'border-white/10 focus:border-cyan-400'
+                    }`}
+                  />
+                  {phoneError && (
+                    <p className="text-[11px] text-red-400 font-semibold">{phoneError}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Human-Readable PDPA Consent Box (Crafted by Data Privacy Officer) */}
+              <div className="p-3 rounded-2xl bg-emerald-950/30 border border-emerald-500/40 text-[10.5px] text-gray-300 leading-relaxed flex flex-col gap-2">
+                <div className="flex items-center gap-1.5 text-emerald-400 font-bold text-xs">
+                  <ShieldCheck size={15} className="text-emerald-400 flex-shrink-0" />
+                  <span>คำสัญญาด้านความเป็นส่วนตัวจากหมอน้องบลู (PDPA Privacy Notice)</span>
+                </div>
+                <p className="text-slate-300 leading-normal">
+                  ข้อมูลไซส์และเบอร์โทรของคุณจะถูกเก็บในระบบดิจิทัลที่ปลอดภัยสูงสุดของ Moonbluesstore เราใช้ข้อมูลนี้เพื่อ <strong>3 เรื่องเท่านั้น</strong>: 
+                  (1) มอบส่วนลด 100 บาทบนบัตร VIP ทันที 
+                  (2) แจ้งเตือนรอบทำความสะอาดเมื่อถึงเวลาสปารองเท้า 
+                  (3) ทักบอกเวลามีรองเท้าแบรนด์โปรดหลุดจองตรงไซส์คุณ 
+                  <em>เราไม่ขายข้อมูลให้คนอื่นเด็ดขาด และคุณขอลบข้อมูลได้ตลอด 24 ชม. ผ่าน LINE OA @moonbluesstore</em>
+                </p>
+                <label className="flex items-center gap-2 mt-1 cursor-pointer font-semibold text-white bg-black/40 p-2 rounded-xl border border-emerald-500/30">
                   <input
                     type="checkbox"
                     checked={pdpaConsent}
                     onChange={(e) => setPdpaConsent(e.target.checked)}
-                    className="w-4 h-4 accent-emerald-500 rounded flex-shrink-0"
+                    className="w-4 h-4 accent-emerald-500 rounded flex-shrink-0 cursor-pointer"
                   />
-                  <span className="text-[10px] sm:text-[11px] leading-tight">ฉันเข้าใจและยินยอมให้ Moonbluesstore นำรสนิยมนี้ไปปรับปรุงการดูแลรองเท้า</span>
+                  <span className="text-[10px] sm:text-[11px] leading-tight text-emerald-200">
+                    ฉันเข้าใจและยินยอมให้ Moonbluesstore ใช้ข้อมูลนี้เพื่อดูแลรองเท้าคู่โปรดของฉัน
+                  </span>
                 </label>
               </div>
 
-              {/* Submit Button - Single Line Responsive */}
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={!pdpaConsent}
-                className="w-full py-3 sm:py-3.5 px-3 rounded-2xl font-black text-xs sm:text-sm bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-[0_0_25px_rgba(52,211,153,0.4)] hover:brightness-110 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center justify-center gap-1.5 whitespace-nowrap"
+                className="w-full py-3.5 px-4 rounded-2xl font-black text-xs sm:text-sm bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-[0_0_30px_rgba(52,211,153,0.4)] hover:brightness-110 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 whitespace-nowrap"
               >
-                <span>ออกบัตร VIP CARD & รับ VOUCHER 100.- (Step 4)</span>
-                <ArrowRight size={16} />
+                <span>✨ สลักบัตร TITANIUM VIP & รับ VOUCHER 100.- ทันที ➔</span>
               </button>
             </form>
           </section>
