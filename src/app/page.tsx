@@ -17,6 +17,10 @@ import {
   Download,
   MessageCircle,
   ArrowRight,
+  Film,
+  Gamepad2,
+  FileEdit,
+  Ticket,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundManager } from '@/lib/audio';
@@ -651,27 +655,51 @@ export default function SneakerSpaGamePage() {
       ctx.fillText('FAVORITE BRAND: ' + profileResult.favoriteBrand, 140, 410);
       ctx.fillText('ROTATION: ' + profileResult.wearFrequency, 140, 450);
 
-      // 6. Voucher Box
-      ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(140, 500, 920, 130);
+      // 6. Draw Mascot Avatar Seal & Finish Export
+      const finishExport = () => {
+        // 7. Voucher Box
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(140, 500, 920, 130);
 
-      ctx.fillStyle = '#78350f';
-      ctx.font = 'bold 20px sans-serif';
-      ctx.fillText('EXCLUSIVE VOUCHER ส่วนลด 100 บาท (สำหรับบริการซักสปา)', 180, 545);
+        ctx.fillStyle = '#78350f';
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillText('EXCLUSIVE VOUCHER ส่วนลด 100 บาท (สำหรับบริการซักสปา)', 180, 545);
 
-      ctx.fillStyle = '#0f172a';
-      ctx.font = '900 44px monospace';
-      ctx.fillText(profileResult.voucherCode, 180, 600);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '900 44px monospace';
+        ctx.fillText(profileResult.voucherCode, 180, 600);
 
-      ctx.fillStyle = '#78350f';
-      ctx.font = '16px sans-serif';
-      ctx.fillText('แสดงรหัสที่ LINE OA @moonbluesstore', 650, 595);
+        ctx.fillStyle = '#78350f';
+        ctx.font = '16px sans-serif';
+        ctx.fillText('แสดงรหัสที่ LINE OA @moonbluesstore', 650, 595);
 
-      // Trigger download
-      const link = document.createElement('a');
-      link.download = `Moonblues_VIP_Card_${profileResult.voucherCode}.png`;
-      link.href = cardCanvas.toDataURL('image/png');
-      link.click();
+        // Trigger download
+        const link = document.createElement('a');
+        link.download = `Moonblues_VIP_Card_${profileResult.voucherCode}.png`;
+        link.href = cardCanvas.toDataURL('image/png');
+        link.click();
+      };
+
+      const avatarImg = new window.Image();
+      avatarImg.src = '/assets/mascot/nong_blue_avatar.png';
+      avatarImg.onload = () => {
+        ctx.save();
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 3;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.beginPath();
+        if (typeof ctx.roundRect === 'function') {
+          ctx.roundRect(890, 200, 170, 170, 24);
+        } else {
+          ctx.rect(890, 200, 170, 170);
+        }
+        ctx.fill();
+        ctx.stroke();
+        ctx.drawImage(avatarImg, 900, 210, 150, 150);
+        ctx.restore();
+        finishExport();
+      };
+      avatarImg.onerror = finishExport;
     };
   };
 
@@ -719,17 +747,18 @@ export default function SneakerSpaGamePage() {
         </div>
       </header>
 
-      {/* 4-Step Progress Indicator Bar */}
+      {/* 4-Step Progress Indicator Bar with Lucide React Icons (No Emojis) */}
       <nav className="w-full max-w-4xl px-3 sm:px-4 mt-3">
         <div className="p-1.5 sm:p-2 rounded-2xl bg-slate-900/90 border border-white/10 flex items-center justify-between gap-1 shadow-lg">
           {[
-            { step: 1 as GameStep, label: 'วิดีโอ 20s', icon: '🎬' },
-            { step: 2 as GameStep, label: 'สปารองเท้า', icon: '🎮' },
-            { step: 3 as GameStep, label: 'กรอกข้อมูล', icon: '📝' },
-            { step: 4 as GameStep, label: 'บัตร Voucher', icon: '🎫' },
+            { step: 1 as GameStep, label: 'วิดีโอ 20s', Icon: Film },
+            { step: 2 as GameStep, label: 'สปารองเท้า', Icon: Gamepad2 },
+            { step: 3 as GameStep, label: 'กรอกข้อมูล', Icon: FileEdit },
+            { step: 4 as GameStep, label: 'บัตร Voucher', Icon: Ticket },
           ].map((item, idx) => {
             const isActive = currentStep === item.step;
             const isPassed = currentStep > item.step;
+            const StepIcon = item.Icon;
             return (
               <React.Fragment key={item.step}>
                 <button
@@ -737,7 +766,7 @@ export default function SneakerSpaGamePage() {
                   onClick={() => {
                     if (isPassed || isActive) setCurrentStep(item.step);
                   }}
-                  className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all flex-grow justify-center whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all flex-grow justify-center whitespace-nowrap ${
                     isActive
                       ? 'bg-blue-600/30 border border-cyan-400 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.3)]'
                       : isPassed
@@ -745,12 +774,17 @@ export default function SneakerSpaGamePage() {
                       : 'bg-white/5 border border-white/5 text-gray-500'
                   }`}
                 >
-                  <span className="text-xs sm:text-sm">{item.icon}</span>
+                  <StepIcon
+                    size={14}
+                    className={`flex-shrink-0 ${
+                      isActive ? 'text-cyan-400' : isPassed ? 'text-emerald-400' : 'text-gray-400'
+                    }`}
+                  />
                   <span className="hidden sm:inline">
                     Step {item.step}: {item.label}
                   </span>
                   <span className="sm:hidden font-mono text-[11px]">S{item.step}</span>
-                  {isPassed && <CheckCircle2 size={13} className="text-emerald-400 hidden xs:inline" />}
+                  {isPassed && <CheckCircle2 size={13} className="text-emerald-400 hidden xs:inline flex-shrink-0" />}
                 </button>
                 {idx < 3 && <ChevronRight size={13} className="text-gray-600 flex-shrink-0" />}
               </React.Fragment>
@@ -873,8 +907,8 @@ export default function SneakerSpaGamePage() {
           <section className="w-full flex flex-col gap-3 sm:gap-4 animate-fadeIn">
             {/* Mascot HUD */}
             <div className="flex items-center gap-2.5 sm:gap-3.5 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-r from-blue-950/60 to-slate-900/80 border border-blue-500/30 shadow-lg">
-              <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-cyan-400 flex-shrink-0 animate-mascot-bob">
-                <Image src="/assets/mascot/nong_blue_avatar.png" alt="Nong Blue" fill className="object-cover object-top" priority />
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-cyan-400 flex-shrink-0 animate-mascot-bob bg-gradient-to-b from-blue-900/60 to-slate-900 shadow-md">
+                <Image src="/assets/mascot/nong_blue_avatar.png" alt="Nong Blue" fill className="object-contain p-1" priority />
               </div>
               <div className="flex-grow min-w-0">
                 <div className="text-[10px] sm:text-[11px] font-bold tracking-wider text-cyan-400 uppercase truncate">
@@ -910,7 +944,7 @@ export default function SneakerSpaGamePage() {
                 ref={containerRef}
                 className="w-full h-[310px] sm:h-[380px] md:h-[430px] relative cursor-crosshair flex items-center justify-center bg-cover bg-center overflow-hidden"
                 style={{
-                  backgroundImage: `linear-gradient(rgba(11, 15, 25, 0.78), rgba(11, 15, 25, 0.90)), url('/assets/mascot/nong_blue_workshop.jpg')`,
+                  backgroundImage: `linear-gradient(rgba(11, 15, 25, 0.40), rgba(11, 15, 25, 0.60)), url('/assets/mascot/spa_workbench.jpg')`,
                 }}
               >
                 <canvas
@@ -1010,8 +1044,8 @@ export default function SneakerSpaGamePage() {
           <section className="w-full max-w-xl flex flex-col gap-3.5 animate-fadeIn">
             {/* Mascot Greeting */}
             <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-blue-950/70 to-slate-900 border border-blue-500/30 shadow-lg">
-              <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border-2 border-cyan-400 flex-shrink-0 animate-mascot-bob">
-                <Image src="/assets/mascot/nong_blue_avatar.png" alt="Nong Blue" fill className="object-cover object-top" priority />
+              <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden border-2 border-cyan-400 flex-shrink-0 animate-mascot-bob bg-gradient-to-b from-blue-900/60 to-slate-900 shadow-md">
+                <Image src="/assets/mascot/nong_blue_avatar.png" alt="Nong Blue" fill className="object-contain p-1" priority />
               </div>
               <div className="min-w-0">
                 <div className="text-[10px] sm:text-[11px] font-bold text-cyan-400 uppercase tracking-wider whitespace-nowrap">
@@ -1249,8 +1283,8 @@ export default function SneakerSpaGamePage() {
                 </div>
 
                 {/* Mascot Hologram Avatar Seal */}
-                <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_15px_rgba(251,191,36,0.4)] flex-shrink-0 bg-slate-900">
-                  <Image src="/assets/mascot/nong_blue_avatar.png" alt="Nong Blue Seal" fill className="object-cover object-top" />
+                <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_15px_rgba(251,191,36,0.4)] flex-shrink-0 bg-gradient-to-br from-amber-500/20 via-slate-900 to-amber-400/10">
+                  <Image src="/assets/mascot/nong_blue_avatar.png" alt="Nong Blue Seal" fill className="object-contain p-1" />
                 </div>
               </div>
 
