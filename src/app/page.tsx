@@ -27,6 +27,14 @@ import {
   Lock,
   User,
   Phone,
+  Footprints,
+  Gem,
+  Compass,
+  Mountain,
+  Layers,
+  Ruler,
+  Boxes,
+  Trophy,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundManager } from '@/lib/audio';
@@ -357,9 +365,9 @@ export default function SneakerSpaGamePage() {
 
       ctx.clearRect(0, 0, w, h);
 
-      // The sneaker natural aspect ratio: 984 / 524 ≈ 1.878 (100% full profile, unclipped toe & heel)
-      const naturalW = 984;
-      const naturalH = 524;
+      // The sneaker natural aspect ratio: 1026 / 532 ≈ 1.929 (100% full profile, unclipped toe & heel)
+      const naturalW = 1026;
+      const naturalH = 532;
       const imgRatio = naturalW / naturalH;
 
       let drawW = w * 0.92;
@@ -379,7 +387,7 @@ export default function SneakerSpaGamePage() {
       ctx.save();
       ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
       ctx.beginPath();
-      ctx.ellipse(drawX + drawW * 0.50, drawY + drawH * 0.95, drawW * 0.46, drawH * 0.065, -0.012, 0, Math.PI * 2);
+      ctx.ellipse(drawX + drawW * 0.50, drawY + drawH * 0.96, drawW * 0.46, drawH * 0.065, -0.012, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
@@ -1030,7 +1038,10 @@ export default function SneakerSpaGamePage() {
             {progress >= 100 && (
               <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 to-slate-900 border-2 border-emerald-400/80 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-3 animate-bounce-short">
                 <div>
-                  <div className="text-xs sm:text-sm font-bold text-emerald-300 whitespace-nowrap">🎉 สปาเสร็จสมบูรณ์ 100%! สภาพเหมือนแกะกล่อง!</div>
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-300 whitespace-nowrap">
+                    <Trophy size={16} className="text-amber-400 flex-shrink-0" />
+                    <span>สปาเสร็จสมบูรณ์ 100%! สภาพเหมือนแกะกล่อง!</span>
+                  </div>
                   <div className="text-[11px] sm:text-xs text-gray-300">กดปุ่มเพื่อไปกรอกข้อมูลรับ Sneakerhead VIP Card & Voucher 100.-</div>
                 </div>
                 <button
@@ -1061,7 +1072,7 @@ export default function SneakerSpaGamePage() {
                   <span className="text-[10px] sm:text-[11px] font-extrabold text-cyan-400 uppercase tracking-wider whitespace-nowrap">
                     STEP 3: SNEAKERHEAD DNA DIAGNOSTIC
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-cyan-400/10 border border-cyan-400/30 text-[9px] font-bold text-cyan-300">
+                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-400/10 border border-cyan-400/30 text-[9px] font-bold text-cyan-300 whitespace-nowrap flex-shrink-0">
                     5 คำถาม • 30 วินาที
                   </span>
                 </div>
@@ -1078,7 +1089,7 @@ export default function SneakerSpaGamePage() {
                   <Sparkles size={12} className="animate-spin text-cyan-300" />
                   <span>LIVE VIP CARD PREVIEW (สลักข้อมูลเรียลไทม์)</span>
                 </div>
-                <span className="text-[9px] font-mono font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+                <span className="text-[9px] font-mono font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30 whitespace-nowrap">
                   VOUCHER 100.- OFF
                 </span>
               </div>
@@ -1092,10 +1103,25 @@ export default function SneakerSpaGamePage() {
                 </div>
                 <div className="text-right flex-shrink-0">
                   <div className="text-[10px] text-gray-400">YOUR DNA:</div>
-                  <div className="text-xs font-black text-cyan-400 whitespace-nowrap">
-                    {selectedPersona === 'Hype Collector' && '🔥 HYPE COLLECTOR'}
-                    {selectedPersona === 'Daily Beater' && '👟 DAILY BEATER'}
-                    {selectedPersona === 'Pristine Purist' && '💎 PRISTINE PURIST'}
+                  <div className="flex items-center gap-1.5 text-xs font-black text-cyan-400 whitespace-nowrap justify-end">
+                    {selectedPersona === 'Hype Collector' && (
+                      <>
+                        <Flame size={13} className="text-amber-400" />
+                        <span>HYPE COLLECTOR</span>
+                      </>
+                    )}
+                    {selectedPersona === 'Daily Beater' && (
+                      <>
+                        <Footprints size={13} className="text-emerald-400" />
+                        <span>DAILY BEATER</span>
+                      </>
+                    )}
+                    {selectedPersona === 'Pristine Purist' && (
+                      <>
+                        <Gem size={13} className="text-cyan-300" />
+                        <span>PRISTINE PURIST</span>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1110,36 +1136,88 @@ export default function SneakerSpaGamePage() {
             {/* Quiz Form Card */}
             <form onSubmit={handleSubmitForm} className="p-4 sm:p-6 rounded-3xl bg-slate-900 border border-white/10 shadow-2xl flex flex-col gap-4">
               
-              {/* Question 1: Sneakerhead Persona */}
-              <div className="flex flex-col gap-1.5">
+              {/* Question 1: Sneakerhead Persona (With High-Definition Image Cards) */}
+              <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 whitespace-nowrap">
                   <Flame size={14} className="text-amber-400 flex-shrink-0" />
                   <span>1. สไตล์การใส่สนีกเกอร์ประจำตัวคุณคือสายไหน?</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   {[
-                    { id: 'Hype Collector', icon: '🔥', title: 'The Hype Collector', desc: 'ล่ารุ่นดรอปแรร์ กล่องต้องครบ สภาพกริบ 10/10' },
-                    { id: 'Daily Beater', icon: '👟', title: 'The Daily Beater', desc: 'ลุยทุกที่ ฝนตก แดดออก รองเท้าคู่โปรดคือชีวิต' },
-                    { id: 'Pristine Purist', icon: '💎', title: 'The Pristine Purist', desc: 'ถนอมดั่งลูก เช็ดทำความสะอาดทุกวัน ไร้รอยย่น' },
-                  ].map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => setSelectedPersona(p.id)}
-                      className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between gap-1 ${
-                        selectedPersona === p.id
-                          ? 'bg-blue-600/30 border-cyan-400 text-white shadow-[0_0_12px_rgba(6,182,212,0.3)] -translate-y-0.5'
-                          : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-base">{p.icon}</span>
-                        {selectedPersona === p.id && <CheckCircle2 size={13} className="text-cyan-400" />}
-                      </div>
-                      <div className="text-[11px] font-bold text-white whitespace-nowrap">{p.title}</div>
-                      <div className="text-[9.5px] text-gray-400 leading-tight">{p.desc}</div>
-                    </button>
-                  ))}
+                    {
+                      id: 'Hype Collector',
+                      img: '/assets/personas/persona_hype.jpg',
+                      Icon: Flame,
+                      iconColor: 'text-amber-400',
+                      title: 'The Hype Collector',
+                      desc: 'ล่ารุ่นดรอปแรร์ กล่องต้องครบ สภาพกริบ 10/10',
+                      tag: 'GRAIL VIP',
+                    },
+                    {
+                      id: 'Daily Beater',
+                      img: '/assets/personas/persona_beater.jpg',
+                      Icon: Footprints,
+                      iconColor: 'text-emerald-400',
+                      title: 'The Daily Beater',
+                      desc: 'ลุยทุกที่ ฝนตก แดดออก รองเท้าคู่โปรดคือชีวิต',
+                      tag: 'STREET WEARER',
+                    },
+                    {
+                      id: 'Pristine Purist',
+                      img: '/assets/personas/persona_purist.jpg',
+                      Icon: Gem,
+                      iconColor: 'text-cyan-300',
+                      title: 'The Pristine Purist',
+                      desc: 'ถนอมดั่งลูก เช็ดทำความสะอาดทุกวัน ไร้รอยย่น',
+                      tag: 'SPA MASTER',
+                    },
+                  ].map((p) => {
+                    const isSel = selectedPersona === p.id;
+                    const CardIcon = p.Icon;
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setSelectedPersona(p.id)}
+                        className={`group relative overflow-hidden rounded-2xl border text-left transition-all flex flex-col ${
+                          isSel
+                            ? 'bg-blue-600/30 border-cyan-400 shadow-[0_0_18px_rgba(6,182,212,0.4)] -translate-y-1'
+                            : 'bg-slate-950/80 border-white/10 hover:border-white/25 hover:bg-slate-900/80'
+                        }`}
+                      >
+                        {/* Card Visual Graphic */}
+                        <div className="relative w-full h-24 sm:h-28 overflow-hidden bg-slate-950">
+                          <Image
+                            src={p.img}
+                            alt={p.title}
+                            fill
+                            className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
+                              isSel ? 'scale-105 brightness-105' : 'brightness-90'
+                            }`}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                          <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md border border-white/20 text-[9px] font-black text-white">
+                            <CardIcon size={11} className={p.iconColor} />
+                            <span>{p.tag}</span>
+                          </div>
+                          {isSel && (
+                            <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-cyan-400 text-slate-950 flex items-center justify-center shadow-lg">
+                              <CheckCircle2 size={13} className="text-slate-950" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Card Info */}
+                        <div className="p-2.5 flex flex-col gap-0.5">
+                          <div className="text-xs font-bold text-white whitespace-nowrap flex items-center gap-1.5">
+                            <CardIcon size={13} className={p.iconColor} />
+                            <span>{p.title}</span>
+                          </div>
+                          <div className="text-[10px] text-gray-400 leading-snug line-clamp-2">{p.desc}</div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1151,28 +1229,35 @@ export default function SneakerSpaGamePage() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { name: 'Nike & Air Jordan', desc: 'ตำนาน Dunk, AF1, Retro High' },
-                    { name: 'New Balance', desc: 'นุ่มระดับพรีเมียม 990, 1906, 2002R' },
-                    { name: 'Asics & Salomon', desc: 'สาย Gorpcore & Techwear ตัวท็อป' },
-                    { name: 'Adidas & Yeezy', desc: 'สามแถบคลาสสิก Samba, Campus' },
-                  ].map((brand) => (
-                    <button
-                      key={brand.name}
-                      type="button"
-                      onClick={() => setSelectedBrand(brand.name)}
-                      className={`p-2.5 rounded-xl border text-left transition ${
-                        selectedBrand === brand.name
-                          ? 'bg-blue-600/30 border-cyan-400 text-white shadow-md'
-                          : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-bold text-white whitespace-nowrap">{brand.name}</span>
-                        {selectedBrand === brand.name && <CheckCircle2 size={12} className="text-cyan-400" />}
-                      </div>
-                      <div className="text-[9.5px] text-gray-400 mt-0.5 truncate">{brand.desc}</div>
-                    </button>
-                  ))}
+                    { name: 'Nike & Air Jordan', desc: 'ตำนาน Dunk, AF1, Retro High', Icon: Zap, color: 'text-cyan-400' },
+                    { name: 'New Balance', desc: 'นุ่มระดับพรีเมียม 990, 1906, 2002R', Icon: Compass, color: 'text-blue-400' },
+                    { name: 'Asics & Salomon', desc: 'สาย Gorpcore & Techwear ตัวท็อป', Icon: Mountain, color: 'text-emerald-400' },
+                    { name: 'Adidas & Yeezy', desc: 'สามแถบคลาสสิก Samba, Campus', Icon: Layers, color: 'text-amber-400' },
+                  ].map((brand) => {
+                    const isSel = selectedBrand === brand.name;
+                    const BrandIcon = brand.Icon;
+                    return (
+                      <button
+                        key={brand.name}
+                        type="button"
+                        onClick={() => setSelectedBrand(brand.name)}
+                        className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-between ${
+                          isSel
+                            ? 'bg-blue-600/30 border-cyan-400 text-white shadow-md -translate-y-0.5'
+                            : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <BrandIcon size={14} className={brand.color} />
+                            <span className="text-[11px] font-bold text-white whitespace-nowrap">{brand.name}</span>
+                          </div>
+                          {isSel && <CheckCircle2 size={12} className="text-cyan-400 flex-shrink-0" />}
+                        </div>
+                        <div className="text-[9.5px] text-gray-400 mt-1 truncate">{brand.desc}</div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1180,7 +1265,7 @@ export default function SneakerSpaGamePage() {
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 whitespace-nowrap">
-                    <Award size={14} className="text-amber-400 flex-shrink-0" />
+                    <Ruler size={14} className="text-amber-400 flex-shrink-0" />
                     <span>3. ไซส์รองเท้าประจำตัวของคุณ?</span>
                   </div>
                   <span className="text-[10px] text-gray-400 hidden sm:inline">เพื่อคัดของแรร์ตรงไซส์ให้คุณก่อนใคร</span>
@@ -1202,8 +1287,9 @@ export default function SneakerSpaGamePage() {
                           : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
                       }`}
                     >
+                      <Ruler size={12} className={selectedSize === size ? 'text-cyan-300' : 'text-gray-400'} />
                       <span>{size}</span>
-                      {selectedSize === size && <CheckCircle2 size={12} className="text-cyan-300" />}
+                      {selectedSize === size && <CheckCircle2 size={12} className="text-cyan-300 ml-0.5" />}
                     </button>
                   ))}
                 </div>
@@ -1212,7 +1298,7 @@ export default function SneakerSpaGamePage() {
               {/* Question 4: Sneaker Rotation Count */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 whitespace-nowrap">
-                  <Sparkles size={14} className="text-amber-400 flex-shrink-0" />
+                  <Boxes size={14} className="text-amber-400 flex-shrink-0" />
                   <span>4. รองเท้าคู่โปรดในกรุมีประมาณกี่คู่?</span>
                 </div>
                 <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
@@ -1495,9 +1581,10 @@ export default function SneakerSpaGamePage() {
               <button
                 type="button"
                 onClick={handleRestart}
-                className="text-center text-xs text-gray-400 hover:text-white py-1.5 transition whitespace-nowrap"
+                className="flex items-center justify-center gap-1.5 text-center text-xs text-gray-400 hover:text-white py-1.5 transition whitespace-nowrap mx-auto"
               >
-                🔄 เริ่มเล่นใหม่อีกครั้ง (ตั้งแต่ Step 1)
+                <RotateCcw size={13} className="text-gray-400" />
+                <span>เริ่มเล่นใหม่อีกครั้ง (ตั้งแต่ Step 1)</span>
               </button>
             </div>
           </section>
